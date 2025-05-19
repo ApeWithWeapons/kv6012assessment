@@ -1,66 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Construction Projects Dashboard</title>
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-XYbs4D4Zy8U3hAb016hJYdOmXlEtvJHv+0G2GP3pELM="
-    crossorigin=""
-  />
-  <style>
-    body { font-family: sans-serif; margin: 1em; }
-    #map { height: 300px; margin: 1em 0; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
-    th, td { padding: 0.5em; border: 1px solid #ccc; text-align: left; }
-    select { font-size: 1em; padding: 0.25em; margin-bottom: 1em; }
-    pre { background: #f8f8f8; padding: 0.5em; white-space: pre-wrap; }
-  </style>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Mapbox -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+
+  <!-- Flatpickr (date picker) -->
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Projects</h1>
+  <header>
+    <h1>Construction Projects Dashboard</h1>
+  </header>
 
-  <!-- PROJECT SELECTOR -->
-  <label for="project-select">Select project:</label>
-  <select id="project-select"></select>
+  <!-- ELEMENT 3 & 4: Projects + Resources -->
+  <section id="project-dashboard" class="card">
+    <label for="project-select">Select project:</label>
+<select id="project-select"></select>
+<table id="resource-table">
+  <thead>
+    <tr><th>ID</th><th>Name</th><th>Description</th><th>Manager</th><th>Location</th></tr>
+  </thead>
+  <tbody>
+    <tr><td colspan="5">No project selected</td></tr>
+  </tbody>
+</table>
 
-  <table id="projects-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Manager</th>
-        <th>Location</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  </section>
 
-  <h2>Location Map</h2>
-  <div id="map">Loading map…</div>
+  <!-- ELEMENT 5: Map -->
+  <section id="map-section" class="card">
+    <h2>Location Map</h2>
+    <div id="map">Loading map…</div>
+  </section>
 
-  <h2>Live Weather & Air Quality</h2>
-  <pre id="weather-info">Loading…</pre>
+  <!-- ELEMENT 6 & 7: Live Weather, AQI & Recommendations -->
+  <section id="weather-panel" class="card">
+    <h2>Live Weather & Air Quality</h2>
+    <div id="current-weather">Loading…</div>
+    <div id="aqi">Loading…</div>
+    <div id="recommendation" class="alert"></div>
+  </section>
 
-  <h2>8-Entry Forecast</h2>
-  <pre id="forecast-info">Loading…</pre>
+  <!-- ELEMENT 8a: 8-Day Forecast -->
+  <section id="forecast-panel" class="card">
+    <h2>8-Day Forecast</h2>
+    <div id="forecast">Loading…</div>
 
- 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+    <!-- ELEMENT 8b: Historical Data Lookup -->
+    <h3>Historical Data</h3>
+    <input type="text" id="history-date" placeholder="Select date">
+    <button id="load-history">Load</button>
+    <div id="history-data"></div>
+  </section>
 
-  
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    defer
-  ></script>
-
-
-  <script src="/js/app.js" defer></script>
-
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="app.js"></script>
 </body>
 </html>
