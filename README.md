@@ -36,3 +36,18 @@ Public network access is limited to specific IPs, with all other traffic denied 
 | 200      | Deny-All    | 0.0.0.0/0          | Deny   |
 
 ![Access restrictions configuration](screenshots/access-restrictions.png)
+
+## Element 2: Infrastructure as Code
+
+We define our core dashboard infrastructure via an ARM template:
+
+- `iac/azuredeploy.json` – declares the App Service Plan, Web App (with system-assigned identity) and network access restrictions  
+- `iac/azuredeploy.parameters.json` – provides parameter values (region, plan name, site name, allowed IP)
+
+Deployment command:
+
+```bash
+az deployment group create \
+  --resource-group kv6012_group \
+  --template-file ./iac/azuredeploy.json \
+  --parameters @./iac/azuredeploy.parameters.json
