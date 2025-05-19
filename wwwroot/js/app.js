@@ -1,95 +1,65 @@
 (async () => {
   console.log(' Starting initialization…');
-  
-  // 1) Fetch the project list
-  console.log(' Fetching /api/projects');
-  const resp = await fetch('/api/projects');
-  if (!resp.ok) throw new Error(`/api/projects returned ${resp.status}`);
-  const projects = await resp.json();
-  console.log(' Received projects:', projects);
-
-  if (!Array.isArray(projects) || projects.length === 0) {
-    throw new Error('No projects were returned from /api/projects');
-  }
-
-  // 2) Populate the <select> and the table
   const sel   = document.getElementById('project-select');
   const tbody = document.querySelector('#projects-table tbody');
+  const map   = L.map('map');
+  let marker;
 
+  // Fetch projects
+  const resp = await fetch('/api/projects');
+  const projects = await resp.json();
   projects.forEach(p => {
     sel.add(new Option(p.title, p.id));
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${p.id}</td>
-      <td>${p.title}</td>
-      <td>${p.description}</td>
-      <td>${p.manager}</td>
-      <td>${p.location}</td>
-    `;
-    tbody.appendChild(tr);
   });
 
-  // 3) Initialise map
-  console.log('Initialising Leaflet map…');
+  // Initialize map and marker
   const first = projects[0];
-  const map   = L.map('map').setView([first.latitude, first.longitude], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 })
-   .addTo(map);
-  const marker = L.marker([first.latitude, first.longitude]).addTo(map);
+  map.setView([first.latitude, first.longitude], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+  marker = L.marker([first.latitude, first.longitude]).addTo(map);
 
-  // 4) Function to load weather/air/forecast for a project
+  // Load data for a project
   async function loadFor(id) {
-    console.log(` Loading weather/AQ/forecast for project ${id}`);
-    
-    const [wFetch, aFetch, fFetch] = await Promise.allSettled([
-      fetch(`/api/projects/${id}/weather`),
-      fetch(`/api/projects/${id}/airquality`),
-      fetch(`/api/projects/${id}/forecast`),
-    ]);
-
-    // Weather & AQ
-    if (wFetch.status === 'fulfilled' && wFetch.value.ok && aFetch.status === 'fulfilled' && aFetch.value.ok) {
-      const w = await wFetch.value.json();
-      const a = await aFetch.value.json();
-      console.log(' Weather:', w, 'AQ:', a);
-      document.getElementById('weather-info').textContent =
-        `Temp: ${w.main.temp}°C • Wind: ${w.wind.speed} m/s • AQI: ${a.aqi}`;
-    } else {
-      console.error(' Weather/AQ failed', wFetch, aFetch);
-      document.getElementById('weather-info').textContent = 'Weather/AQ unavailable';
-    }
-
-    // Forecast
-    if (fFetch.status === 'fulfilled' && fFetch.value.ok) {
-      const f = await fFetch.value.json();
-      console.log(' Forecast:', f);
-      document.getElementById('forecast-info').textContent =
-        f.list.map(d => {
-          const date = new Date(d.dt * 1000).toLocaleDateString();
-          return `${date}: ${d.temp.day}°C — ${d.weather[0].main}`;
-        }).join('\n');
-    } else {
-      console.error(' Forecast failed', fFetch);
-      document.getElementById('forecast-info').textContent = 'Forecast unavailable';
-    }
-  }
-
-  // 5) Wire up the selector
-  sel.addEventListener('change', () => {
-    const id = sel.value|0;
-    const p  = projects.find(x => x.id === id);
+    const p = projects.find(x => x.id == id);
+    // table
+    tbody.innerHTML = '';
+    const resources = await (await fetch(`/api/projects/${id}/resources`)).json();
+    resources.forEach(r => {
+      tbody.insertAdjacentHTML('beforeend',
+        `<tr><td>${r.id}</td><td>${r.name}</td><td>${r.description}</td><td>${r.manager}</td><td>${r.location}</td></tr>`);
+    });
+    // map
     map.setView([p.latitude, p.longitude], 12);
     marker.setLatLng([p.latitude, p.longitude]);
-    loadFor(id);
-  });
+    // weather & AQI
+    const w = await (await fetch(`/api/projects/${id}/weather`)).json();
+    const a = await (await fetch(`/api/projects/${id}/airquality`)).json();
+    document.getElementById('weather-info').textContent =
+      `Temp: ${w.main.temp}°C • Wind: ${w.wind.speed} m/s • AQI: ${a.aqi}`;
+    document.getElementById('recommendation').textContent =
+      w.wind.speed > 10 ? 'High wind – crane not advised.' : a.aqi > 100 ? 'Poor AQI – delay operations.' : 'Conditions normal.';
+    // 8-day forecast
+    const f = await (await fetch(`/api/projects/${id}/forecast`)).json();
+    // show first 8 days
+    document.getElementById('forecast-info').textContent =
+      f.list.slice(0,8).map(d => {
+        const date = new Date(d.dt * 1000).toLocaleDateString();
+        return `${date}: ${d.temp.day}°C — ${d.weather[0].main}`;
+      }).join('\n');
+  }
 
-  // 6) Do the first load
+  // historical
+  document.getElementById('load-history').onclick = async () => {
+    const date = document.getElementById('history-date').value;
+    if (!date) return alert('Please select a date');
+    const h = await (await fetch(`/api/projects/${sel.value}/weather/history?date=${date}`)).json();
+    document.getElementById('history-data').textContent =
+      `On ${date}: Temp ${h.main.temp}°C • Wind ${h.wind.speed} m/s • AQI: ${h.aqi}`;
+  };
+
+  // initial and selector hook
+  sel.onchange = () => loadFor(sel.value);
   loadFor(first.id);
 
-  // Auto-refresh weather & forecast every 5 minutes
-setInterval(() => {
-  const id = sel.value;
-  loadFor(id);
-}, 300_000);
-
+  setInterval(() => loadFor(sel.value), 300000);
 })();
