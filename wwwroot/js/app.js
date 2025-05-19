@@ -120,6 +120,20 @@
       fo.textContent = 'Forecast unavailable';
     }
   }
+// Example – adjust to your existing loadFor() pattern
+document.getElementById('load-history').addEventListener('click', () => {
+  const date = document.getElementById('history-date').value;
+  if (!date) return alert('Please pick a date');
+  fetch(`/api/projects/${currentId}/weather/history?date=${date}`)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('history-data').textContent =
+        `On ${date}: wind ${data.windSpeed} mph, AQI ${data.aqiIndex}`;
+    })
+    .catch(() => {
+      document.getElementById('history-data').textContent = 'Error loading history';
+    });
+});
 
   async function loadHistory() {
     const hd = document.getElementById('history-data');
