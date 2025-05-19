@@ -1,95 +1,165 @@
-(async () => {
-  console.log(' Starting initialization…');
-  
-  // 1) Fetch the project list
-  console.log(' Fetching /api/projects');
-  const resp = await fetch('/api/projects');
-  if (!resp.ok) throw new Error(`/api/projects returned ${resp.status}`);
-  const projects = await resp.json();
-  console.log(' Received projects:', projects);
+// Replace with your actual Mapbox token
+const MAPBOX_TOKEN = '<YOUR_MAPBOX_ACCESS_TOKEN>';
 
-  if (!Array.isArray(projects) || projects.length === 0) {
-    throw new Error('No projects were returned from /api/projects');
+let map;
+let currentProjectId = null;
+
+// Initialise when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  initMap();
+  flatpickr('#history-date', { maxDate: 'today' });
+  document.getElementById('load-history').addEventListener('click', loadHistory);
+
+  loadProjects();
+});
+
+// ELEMENT 3 & 4: Fetch and display projects
+async function loadProjects() {
+  try {
+    const res = await fetch('/api/projects');
+    const projects = await res.json();
+    const select = document.getElementById('project-select');
+
+    projects.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name;
+      select.append(opt);
+    });
+
+    select.addEventListener('change', () => {
+      currentProjectId = select.value;
+      onProjectChange(currentProjectId);
+    });
+  } catch (err) {
+    console.error(err);
+    alert('Failed to load projects');
   }
+}
 
-  // 2) Populate the <select> and the table
-  const sel   = document.getElementById('project-select');
-  const tbody = document.querySelector('#projects-table tbody');
+// Called when a project is selected
+function onProjectChange(id) {
+  loadResources(id);
+  updateMap(id);
+  loadWeather(id);
+  loadForecast(id);
+}
 
-  projects.forEach(p => {
-    sel.add(new Option(p.title, p.id));
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${p.id}</td>
-      <td>${p.title}</td>
-      <td>${p.description}</td>
-      <td>${p.manager}</td>
-      <td>${p.location}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  // 3) Initialise map
-  console.log('Initialising Leaflet map…');
-  const first = projects[0];
-  const map   = L.map('map').setView([first.latitude, first.longitude], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 })
-   .addTo(map);
-  const marker = L.marker([first.latitude, first.longitude]).addTo(map);
-
-  // 4) Function to load weather/air/forecast for a project
-  async function loadFor(id) {
-    console.log(` Loading weather/AQ/forecast for project ${id}`);
-    
-    const [wFetch, aFetch, fFetch] = await Promise.allSettled([
-      fetch(`/api/projects/${id}/weather`),
-      fetch(`/api/projects/${id}/airquality`),
-      fetch(`/api/projects/${id}/forecast`),
-    ]);
-
-    // Weather & AQ
-    if (wFetch.status === 'fulfilled' && wFetch.value.ok && aFetch.status === 'fulfilled' && aFetch.value.ok) {
-      const w = await wFetch.value.json();
-      const a = await aFetch.value.json();
-      console.log(' Weather:', w, 'AQ:', a);
-      document.getElementById('weather-info').textContent =
-        `Temp: ${w.main.temp}°C • Wind: ${w.wind.speed} m/s • AQI: ${a.aqi}`;
-    } else {
-      console.error(' Weather/AQ failed', wFetch, aFetch);
-      document.getElementById('weather-info').textContent = 'Weather/AQ unavailable';
-    }
-
-    // Forecast
-    if (fFetch.status === 'fulfilled' && fFetch.value.ok) {
-      const f = await fFetch.value.json();
-      console.log(' Forecast:', f);
-      document.getElementById('forecast-info').textContent =
-        f.list.map(d => {
-          const date = new Date(d.dt * 1000).toLocaleDateString();
-          return `${date}: ${d.temp.day}°C — ${d.weather[0].main}`;
-        }).join('\n');
-    } else {
-      console.error(' Forecast failed', fFetch);
-      document.getElementById('forecast-info').textContent = 'Forecast unavailable';
-    }
+// ELEMENT 4: Load and render resources table
+async function loadResources(id) {
+  const tbody = document.querySelector('#resource-table tbody');
+  tbody.innerHTML = '';
+  try {
+    const res = await fetch(`/api/projects/${id}/resources`);
+    const items = await res.json();
+    items.forEach(r => {
+      const row = `<tr>
+        <td>${r.id}</td>
+        <td>${r.name}</td>
+        <td>${r.description}</td>
+        <td>${r.manager}</td>
+        <td>${r.location}</td>
+      </tr>`;
+      tbody.insertAdjacentHTML('beforeend', row);
+    });
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = '<tr><td colspan="5">Error loading resources</td></tr>';
   }
+}
 
-  // 5) Wire up the selector
-  sel.addEventListener('change', () => {
-    const id = sel.value|0;
-    const p  = projects.find(x => x.id === id);
-    map.setView([p.latitude, p.longitude], 12);
-    marker.setLatLng([p.latitude, p.longitude]);
-    loadFor(id);
+// ELEMENT 5: Initialise Mapbox
+function initMap() {
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+  map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-0.1276, 51.5074], // Default to London
+    zoom: 5
   });
+}
 
-  // 6) Do the first load
-  loadFor(first.id);
+// ELEMENT 5: Pan & place marker
+async function updateMap(id) {
+  try {
+    const res = await fetch(`/api/projects/${id}`);
+    const project = await res.json();
+    const [lat, lon] = project.coordinates; // [latitude, longitude]
 
-  // Auto-refresh weather & forecast every 5 minutes
-setInterval(() => {
-  const id = sel.value;
-  loadFor(id);
-}, 300_000);
+    map.flyTo({ center: [lon, lat], zoom: 12 });
+    new mapboxgl.Marker().setLngLat([lon, lat]).addTo(map);
+  } catch (err) {
+    console.error(err);
+  }
+}
 
-})();
+// ELEMENT 6 & 7: Live weather + AQI + recommendations
+async function loadWeather(id) {
+  const cw  = document.getElementById('current-weather');
+  const aqi = document.getElementById('aqi');
+  const rec = document.getElementById('recommendation');
+  rec.textContent = ''; rec.className = 'alert';
+
+  try {
+    const res = await fetch(`/api/projects/${id}/weather/current`);
+    const { windSpeed, aqiIndex } = await res.json();
+
+    cw.textContent = `Wind speed: ${windSpeed} mph`;
+    aqi.textContent = `AQI: ${aqiIndex}`;
+
+    // Conditional recommendations
+    if (windSpeed > 20) {
+      rec.classList.add('warn');
+      rec.textContent = 'High wind – crane operations not advised.';
+    } else if (aqiIndex > 100) {
+      rec.classList.add('warn');
+      rec.textContent = 'Poor air quality – postpone earth-moving work.';
+    } else {
+      rec.classList.add('ok');
+      rec.textContent = 'Conditions good – proceed as normal.';
+    }
+  } catch (err) {
+    console.error(err);
+    rec.classList.add('warn');
+    rec.textContent = 'Error loading weather/AQI.';
+  }
+}
+
+// ELEMENT 8a: 8-day forecast
+async function loadForecast(id) {
+  const fc = document.getElementById('forecast');
+  fc.innerHTML = '';
+
+  try {
+    const res = await fetch(`/api/projects/${id}/weather/forecast`);
+    const days = await res.json();
+    days.forEach(d => {
+      const div = document.createElement('div');
+      div.className = 'forecast-day';
+      div.innerHTML = `<strong>${d.date}</strong>: ${d.summary}`;
+      fc.append(div);
+    });
+  } catch (err) {
+    console.error(err);
+    fc.textContent = 'Error loading forecast.';
+  }
+}
+
+// ELEMENT 8b: Historical data lookup
+async function loadHistory() {
+  const out = document.getElementById('history-data');
+  out.textContent = '';
+  const date = document.getElementById('history-date').value;
+  if (!date) return alert('Please select a date.');
+
+  try {
+    const res = await fetch(
+      `/api/projects/${currentProjectId}/weather/history?date=${date}`
+    );
+    const { windSpeed, aqiIndex } = await res.json();
+    out.textContent = `On ${date}: wind ${windSpeed} mph, AQI ${aqiIndex}.`;
+  } catch (err) {
+    console.error(err);
+    out.textContent = 'Error loading historical data.';
+  }
+}
