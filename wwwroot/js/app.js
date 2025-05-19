@@ -69,19 +69,21 @@
     } else {
       recEl.textContent = 'Conditions good – proceed as normal.';
     }
+    
    // 8-day forecast (unique days)
       const f = await fetch(`/api/projects/${id}/forecast`).then(r => r.json());
       const seen = new Set();
       const lines = [];
       f.list.forEach(d => {
         const dateStr = new Date(d.dt * 1000).toLocaleDateString();
-        if (!seen.has(dateStr) && lines.length < 8) {
+        if (!seen.has(dateStr) && lines.length < 81) {
           seen.add(dateStr);
           lines.push(`${dateStr}: ${d.temp.day}°C — ${d.weather[0].main}`);
         }
       });
       document.getElementById('forecast-info').textContent = lines.join('\n');
     }
+    
   // 5) Wire up the selector
   sel.addEventListener('change', () => {
     const id = sel.value|0;
@@ -94,20 +96,20 @@
   // 6) Do the first load
   loadFor(first.id);
 // 7) Historical data lookup
-document.getElementById('load-history').onclick = async () => {
-  const isoDate = document.getElementById('history-date').value;           // "YYYY-MM-DD"
-  if (!isoDate) return alert('Please select a date');
-
-const res = await fetch(`/api/projects/${sel.value}/weather/history?date=${isoDate}`);
-  if (!res.ok) {
-    document.getElementById('history-data').textContent = 'Historical data unavailable';
-    return;
-  }
-  const h = await res.json();
-  document.getElementById('history-data').textContent =
-    `On ${new Date(isoDate).toLocaleDateString()}: Temp ${h.main.temp}°C • Wind ${h.wind.speed} m/s • AQI: ${h.aqi}`;
-};
-
+  document.getElementById('load-history').addEventListener('click', async () => {
+    const date = document.getElementById('history-date').value;
+    if (!date) return alert('Please select a date.');
+    try {
+      const res = await fetch(`/api/projects/${sel.value}/weather/history?date=${date}`);
+      if (!res.ok) throw new Error(`History returned ${res.status}`);
+      const h = await res.json();
+      document.getElementById('history-data').textContent =
+        `On ${date}: Temp ${h.main.temp}°C • Wind ${h.wind.speed} m/s • AQI ${h.aqi}`;
+    } catch (e) {
+      console.error(e);
+      document.getElementById('history-data').textContent = 'Historical data unavailable';
+    }
+  });
   
   // Auto-refresh weather & forecast every 5 minutes
 setInterval(() => {
