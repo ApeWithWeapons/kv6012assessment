@@ -43,11 +43,7 @@ namespace CloudWebApp.Services
             public WeatherMain main { get; set; }
             public WeatherCondition[] weather { get; set; }
         }
-        // ------------------------------------------
 
-        /// <summary>
-        /// Current weather via /data/2.5/weather
-        /// </summary>
         public async Task<CurrentWeather?> GetCurrentAsync(double lat, double lon)
         {
             var url = $"https://api.openweathermap.org/data/2.5/weather" +
@@ -56,11 +52,6 @@ namespace CloudWebApp.Services
             return await _http.GetFromJsonAsync<CurrentWeather>(url);
         }
 
-        /// <summary>
-        /// 8-day forecast:
-        /// 1) Try One Call daily (paid)
-        /// 2) Fallback to 3-hour forecast first 8 points (free)
-        /// </summary>
         public async Task<ForecastWeather?> GetForecastAsync(double lat, double lon)
         {
             // 1) One Call daily

@@ -21,7 +21,7 @@ namespace CloudWebApp.Models
         [Column("Location")]
         public string Location { get; set; }
 
-        // Raw "lat,lon" string from your CSV
+        // Raw "lat,lon" string from CSV
         [Column("Geolocation")]
         public string Geolocation { get; set; }
 
