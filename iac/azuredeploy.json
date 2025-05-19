@@ -4,28 +4,19 @@
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Azure region for all resources"
-      }
+      "metadata": { "description": "Azure region" }
     },
     "planName": {
       "type": "string",
-      "metadata": {
-        "description": "Name of the App Service Plan"
-      }
+      "metadata": { "description": "App Service Plan name" }
     },
     "webAppName": {
       "type": "string",
-      "metadata": {
-        "description": "Name of the Web App"
-      }
+      "metadata": { "description": "Web App name" }
     },
     "allowedIp": {
       "type": "string",
-      "metadata": {
-        "description": "The single IP (in CIDR) you wish to permit"
-      }
+      "metadata": { "description": "CIDR block to allow" }
     }
   },
   "resources": [
@@ -34,10 +25,7 @@
       "apiVersion": "2021-02-01",
       "name": "[parameters('planName')]",
       "location": "[parameters('location')]",
-      "sku": {
-        "name": "F1",
-        "tier": "Free"
-      }
+      "sku": { "name": "F1", "tier": "Free" }
     },
     {
       "type": "Microsoft.Web/sites",
@@ -47,9 +35,7 @@
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('planName'))]"
       },
-      "identity": {
-        "type": "SystemAssigned"
-      }
+      "identity": { "type": "SystemAssigned" }
     },
     {
       "type": "Microsoft.Web/sites/config",
