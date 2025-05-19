@@ -2,12 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vulnerabilityAssessments_Default_storageContainerPath": {
-            "type": "SecureString"
-        },
-        "vulnerabilityAssessments_Default_storageContainerPath_1": {
-            "type": "SecureString"
-        },
+
         "sites_part_1_name": {
             "defaultValue": "part-1",
             "type": "String"
@@ -1352,36 +1347,8 @@
                 "state": "Disabled"
             }
         },
-        {
-            "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
-            "apiVersion": "2024-05-01-preview",
-            "name": "[concat(parameters('servers_kv6012s_name'), '/Default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', parameters('servers_kv6012s_name'))]"
-            ],
-            "properties": {
-                "recurringScans": {
-                    "isEnabled": false,
-                    "emailSubscriptionAdmins": true
-                },
-                "storageContainerPath": "[parameters('vulnerabilityAssessments_Default_storageContainerPath')]"
-            }
-        },
-        {
-            "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
-            "apiVersion": "2024-05-01-preview",
-            "name": "[concat(parameters('servers_sqlserver_part_1_name'), '/Default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers', parameters('servers_sqlserver_part_1_name'))]"
-            ],
-            "properties": {
-                "recurringScans": {
-                    "isEnabled": false,
-                    "emailSubscriptionAdmins": true
-                },
-                "storageContainerPath": "[parameters('vulnerabilityAssessments_Default_storageContainerPath_1')]"
-            }
-        },
+        
+       
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2024-04-01",
