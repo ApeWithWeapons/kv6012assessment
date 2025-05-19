@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "planName": {
+      "value": "part1-plan"
+    },
+    "webAppName": {
+      "value": "part-1"
+    },
+    "allowedIp": {
+      "value": "81.111.238.87/32"
+    }
+  }
+}
