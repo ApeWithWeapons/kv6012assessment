@@ -10,33 +10,57 @@
     crossorigin=""
   />
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; }
-    #map { height: 300px; }
-    table { width: 100%; border-collapse: collapse; margin: 1em 0; }
-    th, td { padding: 0.5em; border: 1px solid #ccc; }
+    body { font-family: sans-serif; margin: 1em; }
+    #map { height: 300px; margin: 1em 0; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
+    th, td { padding: 0.5em; border: 1px solid #ccc; text-align: left; }
+    select { font-size: 1em; padding: 0.25em; margin-bottom: 1em; }
+    pre { background: #f8f8f8; padding: 0.5em; white-space: pre-wrap; }
   </style>
 </head>
 <body>
   <h1>Projects</h1>
+
+  <!-- PROJECT SELECTOR -->
+  <label for="project-select">Select project:</label>
+  <select id="project-select"></select>
+
   <table id="projects-table">
-    <thead><tr><th>ID</th><th>Name</th><th>Start</th><th>End</th><th>Budget</th></tr></thead>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Manager</th>
+        <th>Location</th>
+      </tr>
+    </thead>
     <tbody></tbody>
   </table>
 
   <h2>Location Map</h2>
-  <div id="map"></div>
+  <div id="map">Loading map…</div>
 
   <h2>Live Weather & Air Quality</h2>
   <pre id="weather-info">Loading…</pre>
 
-  <h2>8-Day Forecast</h2>
+  <h2>8-Entry Forecast</h2>
   <pre id="forecast-info">Loading…</pre>
 
+  <!-- Leaflet CSS – no integrity/crossorigin -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- Leaflet JS – no integrity/crossorigin, but we keep defer -->
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-gZqk4tBrNcDmwz+U14iuAJ6F6NG2Rj82DsYf4MJ0wY="
-    crossorigin=""
+    defer
   ></script>
-  <script src="js/app.js"></script>
+
+  <!-- Your app.js, also deferred -->
+  <script src="/js/app.js" defer></script>
+
 </body>
 </html>

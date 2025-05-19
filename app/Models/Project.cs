@@ -7,7 +7,7 @@ namespace CloudWebApp.Models
     public class Project
     {
         [Column("Project_id")]
-        public int Id { get; set; }
+        public byte Id { get; set; }
 
         [Column("Project_name")]
         public string Title { get; set; }
@@ -21,17 +21,18 @@ namespace CloudWebApp.Models
         [Column("Location")]
         public string Location { get; set; }
 
-        // the raw “lat, lon” string from your CSV
+        // Raw "lat,lon" string from your CSV
         [Column("Geolocation")]
         public string Geolocation { get; set; }
 
-        // computed properties so your front‐end and services can still use latitude/longitude
+        // Computed from Geolocation, not stored in the database
         [NotMapped]
         public double Latitude
         {
             get
             {
-                var parts = Geolocation.Split(',', StringSplitOptions.TrimEntries);
+                var parts = Geolocation
+                    .Split(',', StringSplitOptions.TrimEntries);
                 return double.Parse(parts[0]);
             }
         }
@@ -41,7 +42,8 @@ namespace CloudWebApp.Models
         {
             get
             {
-                var parts = Geolocation.Split(',', StringSplitOptions.TrimEntries);
+                var parts = Geolocation
+                    .Split(',', StringSplitOptions.TrimEntries);
                 return double.Parse(parts[1]);
             }
         }
