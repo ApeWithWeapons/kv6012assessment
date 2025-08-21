@@ -74,14 +74,3 @@ C:\Users\almes\Documents\kv6012assessment\app\obj\Debug\net9.0\refint\cloudapp.d
 C:\Users\almes\Documents\kv6012assessment\app\obj\Debug\net9.0\cloudapp.pdb
 C:\Users\almes\Documents\kv6012assessment\app\obj\Debug\net9.0\cloudapp.genruntimeconfig.cache
 C:\Users\almes\Documents\kv6012assessment\app\obj\Debug\net9.0\ref\cloudapp.dll
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.csproj.AssemblyReference.cache
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.AssemblyInfoInputs.cache
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.AssemblyInfo.cs
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.csproj.CoreCompileInputs.cache
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.sourcelink.json
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.dll
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\refint\cloudapp.dll
-C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.pdb
