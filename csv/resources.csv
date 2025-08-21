@@ -1,0 +1,7 @@
+﻿Resource_id,resource_type,Conditions_of_use
+1,Crane,Do not use in high wind
+2,Drill,Do not use in heavy rain
+3,Dumper Truck,"Do not use in heavy rain. Has CO2 emissions so don't use if air quality CO, PM10, PM2.5 or NO2 readings are moderate are poorer."
+4,Digger,"Do not use in heavy rain. Has CO2 emissions so don't use if air quality CO, PM10, PM2.5 or NO2 readings are moderate are poorer."
+5,Loader,"Do not use in heavy rain. Has CO2 emissions so don't use if air quality CO, PM10, PM2.5 or NO2 readings are moderate are poorer."
+6,Concrete mixer,Do not use in heavy rain

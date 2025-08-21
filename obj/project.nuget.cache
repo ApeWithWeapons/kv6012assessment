@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZIrVTvPA5Ts=",
+  "dgSpecHash": "c/2w05TGd5w=",
   "success": true,
-  "projectFilePath": "C:\\Users\\almes\\Documents\\kv6012assessment\\app\\cloudapp.csproj",
+  "projectFilePath": "C:\\Users\\almes\\Documents\\kv6012assessment\\cloudapp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\almes\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\almes\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

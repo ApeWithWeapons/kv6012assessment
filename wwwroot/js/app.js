@@ -47,33 +47,43 @@
       fetch(`/api/projects/${id}/forecast`),
     ]);
 
-    // Weather & AQ
-    if (wFetch.status === 'fulfilled' && wFetch.value.ok && aFetch.status === 'fulfilled' && aFetch.value.ok) {
-      const w = await wFetch.value.json();
-      const a = await aFetch.value.json();
-      console.log(' Weather:', w, 'AQ:', a);
+    // WEATHER & AQI
+    let w, a;
+    if (wFetch.status === 'fulfilled' && wFetch.value.ok &&
+        aFetch.status === 'fulfilled' && aFetch.value.ok) {
+      w = await wFetch.value.json();
+      a = await aFetch.value.json();
       document.getElementById('weather-info').textContent =
         `Temp: ${w.main.temp}°C • Wind: ${w.wind.speed} m/s • AQI: ${a.aqi}`;
     } else {
       console.error(' Weather/AQ failed', wFetch, aFetch);
       document.getElementById('weather-info').textContent = 'Weather/AQ unavailable';
     }
-
-    // Forecast
-    if (fFetch.status === 'fulfilled' && fFetch.value.ok) {
-      const f = await fFetch.value.json();
-      console.log(' Forecast:', f);
-      document.getElementById('forecast-info').textContent =
-        f.list.map(d => {
-          const date = new Date(d.dt * 1000).toLocaleDateString();
-          return `${date}: ${d.temp.day}°C — ${d.weather[0].main}`;
-        }).join('\n');
+ // CONDITIONAL RECOMMENDATION
+    const recEl = document.getElementById('recommendation');
+    recEl.textContent = '';
+    if (w && w.wind.speed > 10) {
+      recEl.textContent = 'High wind – crane operations not advised.';
+    } else if (a && a.aqi > 100) {
+      recEl.textContent = 'Poor air quality – postpone earth-moving work.';
     } else {
-      console.error(' Forecast failed', fFetch);
-      document.getElementById('forecast-info').textContent = 'Forecast unavailable';
+      recEl.textContent = 'Conditions good – proceed as normal.';
     }
-  }
-
+    
+   // 8-day forecast (unique days)
+      const f = await fetch(`/api/projects/${id}/forecast`).then(r => r.json());
+      const seen = new Set();
+      const lines = [];
+      f.list.forEach(d => {
+        const dateStr = new Date(d.dt * 1000).toLocaleDateString();
+        if (!seen.has(dateStr) && lines.length < 81) {
+          seen.add(dateStr);
+          lines.push(`${dateStr}: ${d.temp.day}°C — ${d.weather[0].main}`);
+        }
+      });
+      document.getElementById('forecast-info').textContent = lines.join('\n');
+    }
+    
   // 5) Wire up the selector
   sel.addEventListener('change', () => {
     const id = sel.value|0;
@@ -85,7 +95,22 @@
 
   // 6) Do the first load
   loadFor(first.id);
-
+// 7) Historical data lookup
+  document.getElementById('load-history').addEventListener('click', async () => {
+    const date = document.getElementById('history-date').value;
+    if (!date) return alert('Please select a date.');
+    try {
+      const res = await fetch(`/api/projects/${sel.value}/weather/history?date=${date}`);
+      if (!res.ok) throw new Error(`History returned ${res.status}`);
+      const h = await res.json();
+      document.getElementById('history-data').textContent =
+        `On ${date}: Temp ${h.main.temp}°C • Wind ${h.wind.speed} m/s • AQI ${h.aqi}`;
+    } catch (e) {
+      console.error(e);
+      document.getElementById('history-data').textContent = 'Historical data unavailable';
+    }
+  });
+  
   // Auto-refresh weather & forecast every 5 minutes
 setInterval(() => {
   const id = sel.value;
