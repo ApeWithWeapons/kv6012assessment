@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cloudapp", "cloudapp.csproj", "{DFF21F4F-541F-9AF4-E841-D74C67084062}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kv6012_cloud_app", "junk\kv6012_cloud_app.csproj", "{652C54E8-F077-5B15-3266-FF2969971ED3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFF21F4F-541F-9AF4-E841-D74C67084062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFF21F4F-541F-9AF4-E841-D74C67084062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFF21F4F-541F-9AF4-E841-D74C67084062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFF21F4F-541F-9AF4-E841-D74C67084062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{652C54E8-F077-5B15-3266-FF2969971ED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{652C54E8-F077-5B15-3266-FF2969971ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{652C54E8-F077-5B15-3266-FF2969971ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{652C54E8-F077-5B15-3266-FF2969971ED3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0365CBB8-6E51-4E90-B8B3-62AF5E511982}
+	EndGlobalSection
+EndGlobal
