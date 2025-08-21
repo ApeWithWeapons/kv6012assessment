@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("cloudapp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a79ee8ba0c4d90456ed40bbdb258d6ff450bf96a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+00c18a95fe2b920950df2f13bd7e4d311a475fea")]
 [assembly: System.Reflection.AssemblyProductAttribute("cloudapp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("cloudapp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
