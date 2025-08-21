@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Construction Dashboard";
+}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="~/css/site.css" />
+
+<div class="container">
+    <h1>Construction Dashboard</h1>
+
+    <label for="projectSelect">Choose a project:</label>
+    <select id="projectSelect">
+        <option value="">-- Select --</option>
+    </select>
+
+    <div id="projectDetails" class="hidden">
+        <h2 id="title"></h2>
+        <p id="description"></p>
+        <p><strong>Resources:</strong> <span id="resources"></span></p>
+        <p><strong>CO₂ (kg):</strong> <span id="co2"></span></p>
+        <p><strong>Est. Cost (£):</strong> <span id="cost"></span></p>
+    </div>
+
+    <div id="map"></div>
+
+    <div id="weatherCard" class="weather-card hidden">
+        <h3>Current Weather</h3>
+        <p><strong>Temperature:</strong> <span id="temp"></span> °C</p>
+        <p><strong>Wind:</strong> <span id="wind"></span> mph</p>
+        <p id="weatherAdvice"></p>
+    </div>
+
+    <div id="airCard" class="air-card hidden">
+        <h3>Air Quality</h3>
+        <p><strong>AQI:</strong> <span id="aqi"></span> (<span id="aqiBand"></span>)</p>
+        <p id="airAdvice"></p>
+    </div>
+
+    <div class="forecast-card hidden">
+        <h3>8-Day Forecast</h3>
+        <table class="forecast-table">
+            <thead>
+                <tr>
+                    <th>Date</th><th>Temp (°C)</th><th>Weather</th>
+                </tr>
+            </thead>
+            <tbody id="forecastBody"></tbody>
+        </table>
+    </div>
+
+    <div class="forecast-card hidden">
+        <h3>Historical Data</h3>
+        <input type="date" id="historyPicker" />
+        <button onclick="loadHistory()">Load</button>
+        <p id="historyResult"></p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="~/js/site.js"></script>
+}
