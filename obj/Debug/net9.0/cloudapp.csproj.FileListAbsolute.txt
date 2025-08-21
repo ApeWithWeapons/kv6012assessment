@@ -66,8 +66,6 @@ C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.MvcApplicationPartsAss
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.sourcelink.json
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\scopedcss\bundle\cloudapp.styles.css
-C:\Users\almes\kv6012assessment\obj\Debug\net9.0\compressed\ce0ga7v3km-73k4dx2lpx.gz
-C:\Users\almes\kv6012assessment\obj\Debug\net9.0\compressed\79cj4ots9c-lks27s3iko.gz
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\staticwebassets.development.json
@@ -78,4 +76,3 @@ C:\Users\almes\kv6012assessment\obj\Debug\net9.0\refint\cloudapp.dll
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.pdb
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.genruntimeconfig.cache
 C:\Users\almes\kv6012assessment\obj\Debug\net9.0\ref\cloudapp.dll
-C:\Users\almes\kv6012assessment\obj\Debug\net9.0\compressed\arkyn8qapa-66npkqexek.gz
