@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\almes\\Documents\\kv6012assessment\\cloudapp.csproj": {}
+    "C:\\Users\\almes\\kv6012assessment\\cloudapp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\almes\\Documents\\kv6012assessment\\cloudapp.csproj": {
+    "C:\\Users\\almes\\kv6012assessment\\cloudapp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\almes\\Documents\\kv6012assessment\\cloudapp.csproj",
+        "projectUniqueName": "C:\\Users\\almes\\kv6012assessment\\cloudapp.csproj",
         "projectName": "cloudapp",
-        "projectPath": "C:\\Users\\almes\\Documents\\kv6012assessment\\cloudapp.csproj",
+        "projectPath": "C:\\Users\\almes\\kv6012assessment\\cloudapp.csproj",
         "packagesPath": "C:\\Users\\almes\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\almes\\Documents\\kv6012assessment\\obj\\",
+        "outputPath": "C:\\Users\\almes\\kv6012assessment\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\almes\\AppData\\Roaming\\NuGet\\NuGet.Config"

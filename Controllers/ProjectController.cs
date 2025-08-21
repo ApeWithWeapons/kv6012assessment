@@ -54,14 +54,30 @@ namespace CloudWebApp.Controllers
             return Ok(a);
         }
 
-        [HttpGet("{id}/forecast")]
-        public async Task<IActionResult> GetForecast(int id)
-        {
-            var p = await _repo.GetByIdAsync(id);
-            if (p is null) return NotFound();
-            var f = await _weather.GetForecastAsync(p.Latitude, p.Longitude);
-            return Ok(f);
-        }
+[HttpGet("forecast")]
+public async Task<IActionResult> Forecast([FromQuery] double lat, [FromQuery] double lon)
+{
+    var url = $"https://api.openweathermap.org/data/2.5/forecast/daily" +
+              $"?lat={lat}&lon={lon}&cnt=8&units=metric&appid={_apiKey}";
+
+    using var response = await _httpClient.GetAsync(url);
+    if (!response.IsSuccessStatusCode) return StatusCode(502);
+
+    var json = await response.Content.ReadAsStringAsync();
+    var daily = JsonDocument.Parse(json).RootElement.GetProperty("list");
+
+    var list = daily.EnumerateArray().Select(d => new
+    {
+        date = DateTimeOffset.FromUnixTimeSeconds(d.GetProperty("dt").GetInt64())
+                                .ToString("ddd dd MMM"),
+        min = Math.Round(d.GetProperty("temp").GetProperty("min").GetDouble(), 1),
+        max = Math.Round(d.GetProperty("temp").GetProperty("max").GetDouble(), 1),
+        icon = $"https://openweathermap.org/img/wn/{d.GetProperty("weather")[0].GetProperty("icon").GetString()}@2x.png",
+        desc = d.GetProperty("weather")[0].GetProperty("description").GetString()
+    });
+
+    return Ok(list);
+}
 
         [HttpGet("{id}/history")]
         public async Task<IActionResult> GetHistory(int id, [FromQuery] long dt)

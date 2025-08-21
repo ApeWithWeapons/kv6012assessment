@@ -38,51 +38,23 @@
   const marker = L.marker([first.latitude, first.longitude]).addTo(map);
 
   // 4) Function to load weather/air/forecast for a project
-  async function loadFor(id) {
-    console.log(` Loading weather/AQ/forecast for project ${id}`);
-    
-    const [wFetch, aFetch, fFetch] = await Promise.allSettled([
-      fetch(`/api/projects/${id}/weather`),
-      fetch(`/api/projects/${id}/airquality`),
-      fetch(`/api/projects/${id}/forecast`),
-    ]);
+async function loadForecast(lat, lon) {
+    const list = await (await fetch(`/api/weather/forecast?lat=${lat}&lon=${lon}`)).json();
+    const tbody = document.getElementById('forecastBody');
+    tbody.innerHTML = '';     // clear old rows
 
-    // WEATHER & AQI
-    let w, a;
-    if (wFetch.status === 'fulfilled' && wFetch.value.ok &&
-        aFetch.status === 'fulfilled' && aFetch.value.ok) {
-      w = await wFetch.value.json();
-      a = await aFetch.value.json();
-      document.getElementById('weather-info').textContent =
-        `Temp: ${w.main.temp}°C • Wind: ${w.wind.speed} m/s • AQI: ${a.aqi}`;
-    } else {
-      console.error(' Weather/AQ failed', wFetch, aFetch);
-      document.getElementById('weather-info').textContent = 'Weather/AQ unavailable';
-    }
- // CONDITIONAL RECOMMENDATION
-    const recEl = document.getElementById('recommendation');
-    recEl.textContent = '';
-    if (w && w.wind.speed > 10) {
-      recEl.textContent = 'High wind – crane operations not advised.';
-    } else if (a && a.aqi > 100) {
-      recEl.textContent = 'Poor air quality – postpone earth-moving work.';
-    } else {
-      recEl.textContent = 'Conditions good – proceed as normal.';
-    }
-    
-   // 8-day forecast (unique days)
-      const f = await fetch(`/api/projects/${id}/forecast`).then(r => r.json());
-      const seen = new Set();
-      const lines = [];
-      f.list.forEach(d => {
-        const dateStr = new Date(d.dt * 1000).toLocaleDateString();
-        if (!seen.has(dateStr) && lines.length < 81) {
-          seen.add(dateStr);
-          lines.push(`${dateStr}: ${d.temp.day}°C — ${d.weather[0].main}`);
-        }
-      });
-      document.getElementById('forecast-info').textContent = lines.join('\n');
-    }
+    list.forEach(d => {
+        tbody.insertAdjacentHTML('beforeend', `
+            <tr>
+                <td>${d.date}</td>
+                <td><img src="${d.icon}" alt="${d.desc}" width="40" /></td>
+                <td>${d.min}° / ${d.max}°</td>
+                <td>${d.desc}</td>
+            </tr>
+        `);
+    });
+    document.querySelector('.forecast-card').classList.remove('hidden');
+}
     
   // 5) Wire up the selector
   sel.addEventListener('change', () => {
