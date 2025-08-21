@@ -1,9 +1,15 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CloudWebApp.Data;
 using CloudWebApp.Services;
 using CloudWebApp.Models;
+using Microsoft.Extensions.Configuration;  
+
 
 namespace CloudWebApp.Controllers
 {
@@ -14,15 +20,21 @@ namespace CloudWebApp.Controllers
         private readonly IProjectRepository _repo;
         private readonly WeatherService _weather;
         private readonly AirQualityService _aq;
+        private readonly HttpClient _httpClient;
+        private readonly string _apiKey;
 
         public ProjectsController(
             IProjectRepository repo,
             WeatherService weather,
-            AirQualityService aq)
+            AirQualityService aq,
+            IHttpClientFactory httpFactory,
+            IConfiguration cfg)
         {
-            _repo = repo;
+            _repo   = repo;
             _weather = weather;
-            _aq = aq;
+            _aq      = aq;
+            _httpClient = httpFactory.CreateClient();
+            _apiKey     = cfg["cb214b6a6101271b4097eef2cf169230"];
         }
 
         [HttpGet]
@@ -54,30 +66,30 @@ namespace CloudWebApp.Controllers
             return Ok(a);
         }
 
-[HttpGet("forecast")]
-public async Task<IActionResult> Forecast([FromQuery] double lat, [FromQuery] double lon)
-{
-    var url = $"https://api.openweathermap.org/data/2.5/forecast/daily" +
-              $"?lat={lat}&lon={lon}&cnt=8&units=metric&appid={_apiKey}";
+        [HttpGet("forecast")]
+        public async Task<IActionResult> Forecast([FromQuery] double lat, [FromQuery] double lon)
+        {
+            var url = $"https://api.openweathermap.org/data/2.5/forecast/daily" +
+                      $"?lat={lat}&lon={lon}&cnt=8&units=metric&appid={_apiKey}";
 
-    using var response = await _httpClient.GetAsync(url);
-    if (!response.IsSuccessStatusCode) return StatusCode(502);
+            using var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode) return StatusCode(502);
 
-    var json = await response.Content.ReadAsStringAsync();
-    var daily = JsonDocument.Parse(json).RootElement.GetProperty("list");
+            var json = await response.Content.ReadAsStringAsync();
+            var daily = JsonDocument.Parse(json).RootElement.GetProperty("list");
 
-    var list = daily.EnumerateArray().Select(d => new
-    {
-        date = DateTimeOffset.FromUnixTimeSeconds(d.GetProperty("dt").GetInt64())
-                                .ToString("ddd dd MMM"),
-        min = Math.Round(d.GetProperty("temp").GetProperty("min").GetDouble(), 1),
-        max = Math.Round(d.GetProperty("temp").GetProperty("max").GetDouble(), 1),
-        icon = $"https://openweathermap.org/img/wn/{d.GetProperty("weather")[0].GetProperty("icon").GetString()}@2x.png",
-        desc = d.GetProperty("weather")[0].GetProperty("description").GetString()
-    });
+            var list = daily.EnumerateArray().Select(d => new
+            {
+                date = DateTimeOffset.FromUnixTimeSeconds(d.GetProperty("dt").GetInt64())
+                                        .ToString("ddd dd MMM"),
+                min  = Math.Round(d.GetProperty("temp").GetProperty("min").GetDouble(), 1),
+                max  = Math.Round(d.GetProperty("temp").GetProperty("max").GetDouble(), 1),
+                icon = $"https://openweathermap.org/img/wn/{d.GetProperty("weather")[0].GetProperty("icon").GetString()}@2x.png",
+                desc = d.GetProperty("weather")[0].GetProperty("description").GetString()
+            });
 
-    return Ok(list);
-}
+            return Ok(list);
+        }
 
         [HttpGet("{id}/history")]
         public async Task<IActionResult> GetHistory(int id, [FromQuery] long dt)

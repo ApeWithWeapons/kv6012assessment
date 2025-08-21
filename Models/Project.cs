@@ -10,20 +10,20 @@ namespace CloudWebApp.Models
         public byte Id { get; set; }
 
         [Column("Project_name")]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [Column("Description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [Column("Manager")]
-        public string Manager { get; set; }
+        public string Manager { get; set; } = string.Empty;
 
         [Column("Location")]
-        public string Location { get; set; }
+        public string Location { get; set; } = string.Empty;
 
         // Raw "lat,lon" string from CSV
         [Column("Geolocation")]
-        public string Geolocation { get; set; }
+        public string Geolocation { get; set; } = string.Empty;
 
         // Computed from Geolocation, not stored in the database
         [NotMapped]
@@ -31,8 +31,7 @@ namespace CloudWebApp.Models
         {
             get
             {
-                var parts = Geolocation
-                    .Split(',', StringSplitOptions.TrimEntries);
+                var parts = Geolocation.Split(',', StringSplitOptions.TrimEntries);
                 return double.Parse(parts[0]);
             }
         }
@@ -42,8 +41,7 @@ namespace CloudWebApp.Models
         {
             get
             {
-                var parts = Geolocation
-                    .Split(',', StringSplitOptions.TrimEntries);
+                var parts = Geolocation.Split(',', StringSplitOptions.TrimEntries);
                 return double.Parse(parts[1]);
             }
         }
