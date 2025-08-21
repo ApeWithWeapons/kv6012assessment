@@ -1,32 +1,75 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Dapper;
-using kv6012assessment.Models;
+using CloudWebApp.Data;
+using CloudWebApp.Services;
+using CloudWebApp.Models;
 
-namespace kv6012assessment.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class ProjectsController : ControllerBase
+namespace CloudWebApp.Controllers
 {
-    private readonly IConfiguration _config;
-    public ProjectsController(IConfiguration config) => _config = config;
-
-    [HttpGet]
-    public async Task<IEnumerable<Project>> Get()
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProjectsController : ControllerBase
     {
-        await using var conn = new SqlConnection(
-            _config.GetConnectionString("ProjectsDb"));
-        return await conn.QueryAsync<Project>("SELECT * FROM Projects");
-    }
+        private readonly IProjectRepository _repo;
+        private readonly WeatherService _weather;
+        private readonly AirQualityService _aq;
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Project>> Get(int id)
-    {
-        await using var conn = new SqlConnection(
-            _config.GetConnectionString("ProjectsDb"));
-        var project = await conn.QueryFirstOrDefaultAsync<Project>(
-            "SELECT * FROM Projects WHERE Id = @id", new { id });
-        return project is null ? NotFound() : Ok(project);
+        public ProjectsController(
+            IProjectRepository repo,
+            WeatherService weather,
+            AirQualityService aq)
+        {
+            _repo = repo;
+            _weather = weather;
+            _aq = aq;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<Project>> GetAll() =>
+            await _repo.GetAllAsync();
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Project>> Get(int id)
+        {
+            var project = await _repo.GetByIdAsync(id);
+            return project is null ? NotFound() : project;
+        }
+
+        [HttpGet("{id}/weather")]
+        public async Task<IActionResult> GetWeather(int id)
+        {
+            var p = await _repo.GetByIdAsync(id);
+            if (p is null) return NotFound();
+            var w = await _weather.GetCurrentAsync(p.Latitude, p.Longitude);
+            return Ok(w);
+        }
+
+        [HttpGet("{id}/airquality")]
+        public async Task<IActionResult> GetAirQuality(int id)
+        {
+            var p = await _repo.GetByIdAsync(id);
+            if (p is null) return NotFound();
+            var a = await _aq.GetCurrentAsync(p.Latitude, p.Longitude);
+            return Ok(a);
+        }
+
+        [HttpGet("{id}/forecast")]
+        public async Task<IActionResult> GetForecast(int id)
+        {
+            var p = await _repo.GetByIdAsync(id);
+            if (p is null) return NotFound();
+            var f = await _weather.GetForecastAsync(p.Latitude, p.Longitude);
+            return Ok(f);
+        }
+
+        [HttpGet("{id}/history")]
+        public async Task<IActionResult> GetHistory(int id, [FromQuery] long dt)
+        {
+            var p = await _repo.GetByIdAsync(id);
+            if (p is null) return NotFound();
+            var h = await _weather.GetHistoryAsync(p.Latitude, p.Longitude, dt);
+            return Ok(h);
+        }
     }
 }
