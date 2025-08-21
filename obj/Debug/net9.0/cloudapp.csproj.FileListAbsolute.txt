@@ -155,3 +155,17 @@ C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\staticwebassets.build
 C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.csproj.Up2Date
 C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\cloudapp.genruntimeconfig.cache
 C:\Users\almes\Documents\kv6012assessment\obj\Debug\net9.0\ref\cloudapp.dll
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.csproj.AssemblyReference.cache
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.AssemblyInfoInputs.cache
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.AssemblyInfo.cs
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.csproj.CoreCompileInputs.cache
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.RazorAssemblyInfo.cache
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.RazorAssemblyInfo.cs
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.sourcelink.json
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\scopedcss\bundle\cloudapp.styles.css
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.dll
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\refint\cloudapp.dll
+C:\Users\almes\kv6012assessment\obj\Debug\net9.0\cloudapp.pdb
